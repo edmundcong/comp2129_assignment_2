@@ -7,6 +7,7 @@
 //function headers
 int command_help();
 int userInput(char arg1[]);
+void print_manualFile();
 
 typedef struct value value;
 typedef struct entry entry;

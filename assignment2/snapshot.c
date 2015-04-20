@@ -15,13 +15,21 @@ snapshot* snapshot_tail = NULL;
 char arg1[6];
 
 int command_help(){
-	puts("command_help called");
+	int c;
+	FILE *helpFile;
+	helpFile = fopen("HELP.txt", "r");
+	if (helpFile) { //evaluates to true since not 0/NULL
+		while ((c = getc(helpFile)) != EOF) //but will close once EOF
+		putchar(c);
+		fclose(helpFile);
+	}
 	scanf("%s", arg1);
 	if (strcasecmp(arg1, "QUIT") == 0){
 		userInput(arg1);
 	}
 	return 0;
 }
+
 
 
 int userInput(char arg1[]){

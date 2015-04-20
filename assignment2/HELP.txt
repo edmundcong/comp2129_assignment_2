@@ -1,0 +1,32 @@
+BYE  clear database and exit
+HELP  display this help message
+
+LIST  KEYS	displays all keys in current state
+LIST  ENTRIES	displays all entries in current state
+LIST  SNAPSHOTS	displays all snapshots in the database
+
+GET  <key>	displays entry values
+DEL  <key>	deletes entry from current state
+PURGE  <key>	deletes entry from current state and snapshots
+
+SET  <key>  <value ...>		sets entry values
+PUSH  <key>  <value ...>	pushes each value to the front one at a time
+APPEND  <key>  <value ...>	append each value to the back one at a time
+
+PICK  <key>  <index>	displays entry value at index
+PLUCK  <key>  <index>	displays and removes entry value at index
+POP  <key>	displays and removes the front entry value
+DROP  <id>	deletes snapshot
+ROLLBACK  <id>	restores to snapshot and deletes newer snapshots
+CHECKOUT  <id>	replaces current state with a copy of snapshot
+SNAPSHOT	saves the current state as a snapshot
+
+MIN  <key>	displays minimum entry value
+MAX  <key>	displays maximum entry value
+SUM  <key>	displays sum of entry values
+LEN  <key>	displays number of entry values
+
+REV  <key>	reverses order of entry values
+UNIQ  <key>	removes repeated adjacent entry values
+SORT  <key>	sorts entry values in ascending order
+
