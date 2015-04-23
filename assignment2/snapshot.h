@@ -22,7 +22,7 @@
 #define DROP "DROP"
 #define ROLLBACK "ROLLBACK"
 #define CHECKOUT "CHECKOUT"
-#define SNAPSHOT "SNAPSHOT"
+#define SNAPSHOT "SNAPSHOT\n"
 #define MIN "MIN"
 #define MAX "MAX"
 #define SUM "SUM"
@@ -65,21 +65,19 @@
 
 typedef struct value value;
 typedef struct entry entry;
-typedef struct entry_list entry_list;
 typedef struct snapshot snapshot;
-typedef struct snapshot_list snapshot_list;
 
-//function headers
+/*Function headers*/
 int command_help();
 int userInput(char com[]);
 int commandMap(char **comCheck);
-//entry functions
-entry_list *entry_list_create();
-void set(entry_list *list, value *value);
-void push(entry_list *list, value *value);
-void append(entry_list *list, value *value);
 
-/*Nodes*/
+entry entry_init(value *value);
+/*once i've finished this linkedlist i will need to pass this a linked
+list of values instead of nothing*/
+void set(entry *entry_head, value *value);
+void push(entry *list, value *value);
+void append(entry *list, value *value);
 
 struct value {
   value* prev;
@@ -100,18 +98,4 @@ struct snapshot {
   entry* entries;
   int id;
 };
-
-/*Lists*/
-
-struct entry_list {
-  entry* prev;
-  entry* next;
-  int len;
-};
-
-struct snapshot_list{
-  snapshot *first;
-  snapshot *last;
-};
-
 #endif
