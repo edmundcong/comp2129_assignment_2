@@ -3,7 +3,6 @@
 
 #define MAX_KEY_LENGTH 16
 #define MAX_LINE_LENGTH 1024
-#define SEPARATOR " "
 
 #define HELP "HELP\n"
 #define BYE "BYE\n"

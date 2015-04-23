@@ -47,12 +47,11 @@ int userInput(char com[]){
 	char *tokPtr = com;
 	tokPtr = strtok(com, " ");
 	while (tokPtr != NULL){
+		printf("%s\n", tokPtr);
 		comCheck[i] = tokPtr;
-		printf("tokptr is: %s\n", tokPtr);
 		tokPtr = strtok (NULL, " ");
 		i++;
 	}
-
 	commandMap(comCheck);
 	return 0;
 }

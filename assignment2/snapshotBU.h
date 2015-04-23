@@ -3,13 +3,10 @@
 
 #define MAX_KEY_LENGTH 16
 #define MAX_LINE_LENGTH 1024
-#define SEPARATOR " "
 
-#define HELP "HELP\n"
-#define BYE "BYE\n"
-#define LISTKEYS "LIST KEYS\n"
-#define LISTENTRIES "LIST ENTRIES\n"
-#define LISTSNAPSHOTS "LIST SNAPSHOTS\n"
+#define HELP "HELP"
+#define BYE "BYE"
+#define LIST "LIST"
 #define GET "GET"
 #define DEL "DEL"
 #define PURGE "PURGE"
@@ -58,28 +55,20 @@
 "MAX  <key>	displays maximum entry value\n"\
 "SUM  <key>	displays sum of entry values\n"\
 "LEN  <key>	displays number of entry values\n"\
-\
+"\n"\
 "REV  <key>	reverses order of entry values\n"\
 "UNIQ  <key>	removes repeated adjacent entry values\n"\
 "SORT  <key>	sorts entry values in ascending order\n"\
 
-typedef struct value value;
-typedef struct entry entry;
-typedef struct entry_list entry_list;
-typedef struct snapshot snapshot;
-typedef struct snapshot_list snapshot_list;
 
 //function headers
 int command_help();
 int userInput(char com[]);
-int commandMap(char **comCheck);
-//entry functions
-entry_list *entry_list_create();
-void set(entry_list *list, value *value);
-void push(entry_list *list, value *value);
-void append(entry_list *list, value *value);
+int commandMap(char comCheck[]);
 
-/*Nodes*/
+typedef struct value value;
+typedef struct entry entry;
+typedef struct snapshot snapshot;
 
 struct value {
   value* prev;
@@ -99,19 +88,6 @@ struct snapshot {
   snapshot* next;
   entry* entries;
   int id;
-};
-
-/*Lists*/
-
-struct entry_list {
-  entry* prev;
-  entry* next;
-  int len;
-};
-
-struct snapshot_list{
-  snapshot *first;
-  snapshot *last;
-};
+ };
 
 #endif
