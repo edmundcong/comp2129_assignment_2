@@ -7,9 +7,9 @@
 
 #define HELP "HELP\n"
 #define BYE "BYE\n"
-#define LISTKEYS "LIST KEYS\n"
-#define LISTENTRIES "LIST ENTRIES\n"
-#define LISTSNAPSHOTS "LIST SNAPSHOTS\n"
+#define LIST_KEYS "LIST KEYS\n"
+#define LIST_ENTRIES "LIST ENTRIES\n"
+#define LIST_SNAPSHOTS "LIST SNAPSHOTS\n"
 #define GET "GET"
 #define DEL "DEL"
 #define PURGE "PURGE"
@@ -72,7 +72,13 @@ int command_help();
 int userInput(char com[]);
 int commandMap(char **comCheck);
 
-entry entry_init(value *value);
+entry* entry_init(value **value_head);
+void entry_insertAtHead(value **value_head);
+void entry_insertAtTail(value **value_head);
+
+value* value_init(int value);
+void value_insertAtHead(int value);
+void value_insertAtTail(int value);
 /*once i've finished this linkedlist i will need to pass this a linked
 list of values instead of nothing*/
 void set(entry *entry_head, value *value);
@@ -83,6 +89,7 @@ struct value {
   value* prev;
   value* next;
   int value;
+  int value_index;
 };
 
 struct entry {
