@@ -72,16 +72,16 @@ int command_help();
 int userInput(char com[]);
 int commandMap(char **comCheck);
 
+value* value_init(int value_stored);
+void value_insertAtHead(int value_stored);
+void value_insertAtTail(int value_stored);
+
 entry* entry_init(value **value_head);
 void entry_insertAtHead(value **value_head);
 void entry_insertAtTail(value **value_head);
-
-value* value_init(int value);
-void value_insertAtHead(int value);
-void value_insertAtTail(int value);
 /*once i've finished this linkedlist i will need to pass this a linked
 list of values instead of nothing*/
-void set(entry *entry_head, value *value);
+void set(entry *entry_head, value *value_head);
 void push(entry *list, value *value);
 void append(entry *list, value *value);
 
