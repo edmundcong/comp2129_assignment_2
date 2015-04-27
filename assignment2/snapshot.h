@@ -81,7 +81,8 @@ void entry_insertAtHead(value **value_head);
 void entry_insertAtTail(value **value_head);
 /*once i've finished this linkedlist i will need to pass this a linked
 list of values instead of nothing*/
-void set(entry *entry_head, value *value_head);
+// void set(entry *entry_head, value *value_head);
+void set(entry *entry_head);
 void push(entry *list, value *value);
 void append(entry *list, value *value);
 

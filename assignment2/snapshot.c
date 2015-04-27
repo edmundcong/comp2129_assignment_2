@@ -33,7 +33,6 @@ value* value_init(int value_stored){ //might incur a shadowing problem
 	newValue->prev = NULL;
 	newValue->value = value_stored;
 	newValue->value_index = value_index;
-	// printf("value %d index is %d", newValue->value, newValue->value_index);
 	value_index++;
 	return newValue;
 }
@@ -89,7 +88,6 @@ void value_insertAtTail(int value_stored){
 	newValue->prev = temp;
 	printf("value_insertAtTail: prev value is %d and newValue is %d\n",
 	temp->value, newValue->value);
-	//odd things happen when you give it a smaller set then a larger set
 }
 
 int commandMap(char **comCheck){
@@ -99,7 +97,7 @@ int commandMap(char **comCheck){
 	}
 
 	if (strcasecmp(*comCheck, SET	)==0){
-		set(entry_head, value_head);
+		set(entry_head);
 		userInput(com);
 	}
 
@@ -118,7 +116,7 @@ int commandMap(char **comCheck){
 	return 0;
 }
 
-void set(entry* entry_head, value* value_head){ //might not need entry_head
+void set(entry* entry_head){ //might not need entry_head
 	//want to create a new head LL after any set A x
 	for (int l = 2; l < value_entries_counter; l++){
 		value_entries[value_array_index] = atoi(comCheck[l]);
@@ -130,8 +128,11 @@ void set(entry* entry_head, value* value_head){ //might not need entry_head
 			value_insertAtTail(value_stored);
 		}
 	}
-	// int temp = value_head->value;
-	// printf("value head value %d\n", temp);
+	/*can access values now (was passing node with same name)
+	which causes shadowing problems with scope.
+	need to attach the head of each value linked list to the node of
+	each entry.*/
+	printf("value head value %d\n",value_head->value);
 	value_array_index = 0; //index for passed value array (pass to entry node)
 	if (is_entry_head == 0){
 		entry_insertAtHead(&value_head);
@@ -139,6 +140,7 @@ void set(entry* entry_head, value* value_head){ //might not need entry_head
 	else {
 		entry_insertAtTail(&value_head);
 	}
+	value_index = 0;
 	printf("ok\n");
 }
 
