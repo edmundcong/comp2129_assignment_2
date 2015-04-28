@@ -1,0 +1,16 @@
+void entry_insertAtHead
+
+print statement for checking DLLs child DLLs values
+	int temp = newEntry->values->value;
+	printf("temp value %d\n", temp);
+	int ttemp = newEntry->values->next->value;
+	printf("\nnext temp value %d\n", ttemp);
+e.g. printing the entries value's values
+
+entry_insertAtTail/Head
+
+	// printf("entry_temp is %s| newEntry is %s\n", temp->key, newEntry->key);
+
+	// printf("value_insertAtHead: value_head is %d and newValue is %d\n",
+		value_head->value, newValue->value);
+

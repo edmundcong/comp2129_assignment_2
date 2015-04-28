@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
+#include <stdbool.h>
 //fscan,scanf,strtoc,strsep, delimiter is spaces
 //free all memory
+
+//note: use str_length not sizeof(only works at compile time)
 
 #include "snapshot.h"
 value* value_head = NULL;
@@ -39,31 +42,31 @@ value* value_init(int value_stored){ //might incur a shadowing problem
 /*initialising our the linkedList's new node*/
 //will implement functionality of passing it the
 //value linked list
-entry* entry_init(value** value_head){
+entry* entry_init(){
 	entry* newEntry = (entry*)malloc(sizeof(struct entry));
 	newEntry->next = NULL;
 	newEntry->prev = NULL;
-	newEntry->values = *value_head;
+	newEntry->values = value_head;
 	strcpy(newEntry->key,comCheck[1]);
 	return newEntry;
 }
 
-void entry_insertAtHead(value **value_head){
-	entry* newEntry = entry_init(value_head);
+void entry_insertAtHead(){
+	entry* newEntry = entry_init();
 	entry_head = newEntry;
 	is_entry_head = 1;
-	printf("newEntry is %s\n", newEntry->key);
+	// printf("newEntry is %s\n", newEntry->key);
 	return;
 }
 
 
-void entry_insertAtTail(value **value_head){
+void entry_insertAtTail(){
 	entry* temp = entry_head;
-	entry* newEntry = entry_init(value_head);
+	entry* newEntry = entry_init();
 	while(temp->next != NULL){
 		temp = temp->next;
 	}
-	printf("entry_temp is %s| newEntry is %s\n", temp->key, newEntry->key);
+	// printf("entry_temp is %s| newEntry is %s\n", temp->key, newEntry->key);
 	temp->next = newEntry;
 	newEntry->prev = temp;
 }
@@ -71,8 +74,8 @@ void entry_insertAtTail(value **value_head){
 void value_insertAtHead(int value_stored){
 	value* newValue = value_init(value_stored);
 	value_head = newValue;
-	printf("value_insertAtHead: value_head is %d and newValue is %d\n",
-	value_head->value, newValue->value);
+	// printf("value_insertAtHead: value_head is %d and newValue is %d\n",
+	// value_head->value, newValue->value);
 	is_value_head = 1;
 	return;
 }
@@ -95,12 +98,14 @@ int commandMap(char **comCheck){
 		command_help();
 		userInput(com);
 	}
-
 	if (strcasecmp(*comCheck, SET	)==0){
 		set(entry_head);
 		userInput(com);
 	}
-
+	if (strcasecmp(*comCheck, GET)==0){
+		get(entry_head);
+		userInput(com);
+	}
 	if (strcasecmp(*comCheck, SNAPSHOT)==0){
 		printf("SNAPSHOT called\n");
 		userInput(com);
@@ -116,7 +121,7 @@ int commandMap(char **comCheck){
 	return 0;
 }
 
-void set(entry* entry_head){ //might not need entry_head
+void set(){ //might not need entry_head
 	//want to create a new head LL after any set A x
 	for (int l = 2; l < value_entries_counter; l++){
 		value_entries[value_array_index] = atoi(comCheck[l]);
@@ -135,14 +140,40 @@ void set(entry* entry_head){ //might not need entry_head
 	printf("value head value %d\n",value_head->value);
 	value_array_index = 0; //index for passed value array (pass to entry node)
 	if (is_entry_head == 0){
-		entry_insertAtHead(&value_head);
+		entry_insertAtHead();
 	}
 	else {
-		entry_insertAtTail(&value_head);
+		entry_insertAtTail();
 	}
+	printf("entry head value %s\n",entry_head->key);
 	value_index = 0;
 	printf("ok\n");
 }
+
+void get(){
+	entry* tempEntry = entry_head; //temp is entry_head node
+	value* tempValue = value_head;
+	// strncpy(comCheck[1], comCheck[1], strlen(comCheck[1])-1);
+	// printf("temp->key: %s| comCheck[1]: %s|\n", temp->key, comCheck[1]);
+
+	int keyLength = strlen(tempEntry->key);
+	bool check = true;
+	while(check){
+		if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0){
+			printf("[");
+			while(tempValue->next != NULL){
+				printf("%d", tempValue->value);
+				printf(" ");
+				tempValue = tempValue->next;
+			}
+			printf("%d]\n", tempValue->value);
+			check = false;
+			break;
+		}
+	}
+}
+
+
 
 int command_help(){
 	printf("%s", MANPAGE);
@@ -154,7 +185,7 @@ int command_help(){
 int userInput(char com[]){
 	printf(">");
 	i = 0;
-	while(1){
+	while(true){
 		fgets(com, MAX_LINE_LENGTH, stdin);
 		char *tokPtr = strtok(com, " ");
 		while (tokPtr != NULL){
@@ -163,10 +194,6 @@ int userInput(char com[]){
 			i++;
 			// k++;
 		}
-		// j = i;
-		// printf("k: %d\n", k);
-		// j = k - j; //iterator used for entries array passing
-		// printf("j = %d| i = %d | k = %d\n", j, i, k);
 		if (i > 1) value_entries_counter = i;
 		free(tokPtr);
 		k = 0;
