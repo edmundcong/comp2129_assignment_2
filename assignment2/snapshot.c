@@ -36,7 +36,7 @@ value* value_init(int value_stored){ //might incur a shadowing problem
 	newValue->next = NULL;
 	newValue->prev = NULL;
 	newValue->value = value_stored;
-	// newValue->value_index = value_index;
+	newValue->value_index = value_index;
 	value_index++;
 	return newValue;
 }
@@ -175,7 +175,7 @@ void del(){
 }
 while(found == false){
 	// printf("keylength: %d templength: %d\n", keyLength, tempLength);
-	tempEntry = tempEntry->next;
+	// tempEntry = tempEntry->next;
 	tempLength = strlen(tempEntry->key);
 	if (strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && (keyLength == tempLength)){
 		// toDelete = tempEntry;
@@ -187,7 +187,7 @@ while(found == false){
 		printf("no such key\n\n");
 		userInput(com);
 	}
-	// tempEntry = tempEntry->next;
+	tempEntry = tempEntry->next;
 }
 // singular list
 if((tempEntry->next == NULL)&&(tempEntry->prev == NULL)){
@@ -205,6 +205,7 @@ if((tempEntry->next != NULL)&&(tempEntry->prev == NULL)){
 	tempEntry->next->prev = NULL;
 	free(tempEntry->values);
 	free(tempEntry);
+	// is_entry_head = 0;
 	printf("ok\n\n");
 	return;
 }
