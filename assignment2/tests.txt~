@@ -13,4 +13,8 @@ entry_insertAtTail/Head
 
 	// printf("value_insertAtHead: value_head is %d and newValue is %d\n",
 		value_head->value, newValue->value);
+get()
+
+compare passed command and key
+	printf("temp->key: %s| comCheck[1]: %s|\n", temp->key, comCheck[1]);
 

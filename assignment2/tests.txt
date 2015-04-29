@@ -18,3 +18,9 @@ get()
 compare passed command and key
 	printf("temp->key: %s| comCheck[1]: %s|\n", temp->key, comCheck[1]);
 
+		// else {
+		// 	printf("no such key\n");
+		// 	printf("3 keylength: %d and tempLength: %d\n", keyLength, tempLength);
+		// 	userInput(com);
+		// }
+
