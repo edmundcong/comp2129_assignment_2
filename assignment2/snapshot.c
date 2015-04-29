@@ -27,6 +27,7 @@ int value_entries_counter = 0;
 int value_entries[MAX_LINE_LENGTH];
 char key[MAX_KEY_LENGTH];
 char com[MAX_LINE_LENGTH]; //store initial command/input
+char *deleted[MAX_LINE_LENGTH];
 char *comCheck[MAX_LINE_LENGTH]; //stores current command/input
 
 
@@ -35,7 +36,7 @@ value* value_init(int value_stored){ //might incur a shadowing problem
 	newValue->next = NULL;
 	newValue->prev = NULL;
 	newValue->value = value_stored;
-	newValue->value_index = value_index;
+	// newValue->value_index = value_index;
 	value_index++;
 	return newValue;
 }
@@ -55,7 +56,7 @@ void entry_insertAtHead(){
 	entry* newEntry = entry_init();
 	entry_head = newEntry;
 	is_entry_head = 1;
-	printf("newEntry is %s\n", newEntry->key);
+	// printf("newEntry is %s\n", newEntry->key);
 	return;
 }
 
@@ -89,7 +90,7 @@ void entry_insertAtTail(){
 	therefore del will need to be done before get can be complete. since we need to
 	be able to delete any keys that we modify e.g. set a 1 2 then set a 5 4, we'd
 	delete the first entry, then move to the back of the tail and add set a 5 4 there.*/
-	printf("newEntry key %s\n", newEntry->key);
+	// printf("newEntry key %s\n", newEntry->key);
 	// printf("entry_temp is %s| newEntry is %s\n", temp->key, temp->next->key); //proof their linked
 	// printf("entry_temp value %d| newEntry value %d\n", temp->values->next->value, newEntry->values->value);
 }
@@ -97,8 +98,8 @@ void entry_insertAtTail(){
 void value_insertAtHead(int value_stored){
 	value* newValue = value_init(value_stored);
 	value_head = newValue;
-	printf("value_insertAtHead: value_head is %d and newValue is %d\n",
-	value_head->value, newValue->value);
+	// printf("value_insertAtHead: value_head is %d and newValue is %d\n",
+	// value_head->value, newValue->value);
 	is_value_head = 1;
 	return;
 }
@@ -112,8 +113,8 @@ void value_insertAtTail(int value_stored){
 	}
 	temp->next = newValue;
 	newValue->prev = temp;
-	printf("value_insertAtTail: prev value is %d and newValue is %d\n",
-	temp->value, newValue->value);
+	// printf("value_insertAtTail: prev value is %d and newValue is %d\n",
+	// temp->value, newValue->value);
 }
 
 int commandMap(char **comCheck){
@@ -122,30 +123,114 @@ int commandMap(char **comCheck){
 		userInput(com);
 	}
 	if (strcasecmp(*comCheck, SET	)==0){
-		set(entry_head);
+		set();
 		userInput(com);
 	}
 	if (strcasecmp(*comCheck, GET)==0){
-		get(entry_head);
+		get();
 		userInput(com);
 	}
 	if (strcasecmp(*comCheck, SNAPSHOT)==0){
-		printf("SNAPSHOT called\n");
+		// printf("SNAPSHOT called\n");
 		userInput(com);
 	}
-
+	if (strcasecmp(*comCheck, DEL)==0){
+		del();
+		userInput(com);
+	}
 	if (strcasecmp(*comCheck, BYE) == 0){
 		printf("bye\n");
+		free(value_head);
+		free(entry_head);
+		free(snapshot_head);
 		//need to clear and close DB here
 		exit(0);
 	}
-	printf("no such command\n");
-	printf(">");
+	printf("no such command\n\n");
+	userInput(com);
 	return 0;
 }
 
-void set(){ //might not need entry_head
-	//want to create a new head LL after any set A x
+void del(){
+	//double delete past first node doesn't work
+	//boundary cases
+	//word input has more errors
+	entry* tempEntry = entry_head;
+	// entry* toDelete = entry_head;
+	int keyLength = strlen(comCheck[1])-1;
+	bool found = false;
+
+	if (tempEntry==NULL){ //if no head exists
+		printf("no such key\n\n");
+		userInput(com);
+	}
+
+
+	int tempLength = strlen(tempEntry->key);
+	/*finding the node to delete*/
+	if (tempEntry->next == NULL && (strncmp(tempEntry->key,comCheck[1],keyLength) == 0 &&
+	(keyLength == tempLength))){ //we've found it on the first go
+	found = true;
+	// toDelete = tempEntry;
+}
+while(found == false){
+	// printf("keylength: %d templength: %d\n", keyLength, tempLength);
+	tempEntry = tempEntry->next;
+	tempLength = strlen(tempEntry->key);
+	if (strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && (keyLength == tempLength)){
+		// toDelete = tempEntry;
+		// printf("2tempEntry key: %s\n", tempEntry->key);
+		found = true;
+		break;
+	}
+	if ((tempEntry->next == NULL) && (found = false)){
+		printf("no such key\n\n");
+		userInput(com);
+	}
+	// tempEntry = tempEntry->next;
+}
+// singular list
+if((tempEntry->next == NULL)&&(tempEntry->prev == NULL)){
+	entry_head = NULL;
+	free(entry_head);
+	is_entry_head = 0;
+	printf("ok\n\n");
+	return;
+}
+
+
+// at the head
+if((tempEntry->next != NULL)&&(tempEntry->prev == NULL)){
+	entry_head = tempEntry->next;
+	tempEntry->next->prev = NULL;
+	free(tempEntry->values);
+	free(tempEntry);
+	printf("ok\n\n");
+	return;
+}
+
+//in the middle
+if((tempEntry->next != NULL)&&(tempEntry->prev != NULL)){
+	*deleted = tempEntry->key;
+	tempEntry->prev->next = tempEntry->next;
+	tempEntry->next->prev = tempEntry->prev;
+	free(tempEntry->values);
+	free(tempEntry);
+	printf("ok\n\n");
+	return;
+}
+
+// at the tail
+if((tempEntry->next == NULL)&&(tempEntry->prev != NULL)){
+	tempEntry->prev->next = NULL;
+	free(tempEntry->values);
+	free(tempEntry);
+	printf("ok\n\n");
+}
+}
+
+
+void set(){
 	for (int l = 2; l < value_entries_counter; l++){
 		value_entries[value_array_index] = atoi(comCheck[l]);
 		value_array_index++;
@@ -156,7 +241,6 @@ void set(){ //might not need entry_head
 			value_insertAtTail(value_stored);
 		}
 	}
-	// printf("value head value %d\n",value_head->value);
 	value_array_index = 0; //index for passed value array (pass to entry node)
 	if (is_entry_head == 0){
 		entry_insertAtHead();
@@ -164,14 +248,10 @@ void set(){ //might not need entry_head
 	else {
 		entry_insertAtTail();
 	}
-	// printf("entry head value %s\n",entry_head->key);
 	value_index = 0;
-	printf("ok\n");
+	printf("ok\n\n");
 }
 
-// void get_values(entry* tmp){
-//
-// }
 
 void get_values(entry* tmp){
 	value* tempValue = tmp->values;
@@ -181,24 +261,25 @@ void get_values(entry* tmp){
 		printf(" ");
 		tempValue = tempValue->next; //should reset tempvalue
 	}
-	printf("%d]\n", tempValue->value);
+	printf("%d]\n\n", tempValue->value);
 }
 
 void get(){
+	if (entry_head == NULL){
+		printf("no such key\n\n");
+		userInput(com);
+	}
+
 	entry* tempEntry = entry_head;
 	bool found = false;
 	int keyLength = strlen(comCheck[1])-1;
 	int tempLength = strlen(tempEntry->key);
-
-	// printf("%s|%s|%d|%lu\n", tempEntry->key, comCheck[1], keyLength, strlen(tempEntry->key));
 	if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
-		printf("1 keyLength: %d and tempLength: %d\n", keyLength, tempLength);
 		get_values(tempEntry);
 		found = true;
 		userInput(com);
 	}
 	while (found == false){
-		//not getting the one where next is null i.e. tail
 		// printf("1.5 keylength: %d and tempLength: %d\n", keyLength, tempLength);
 		tempEntry = tempEntry->next;
 		tempLength = strlen(tempEntry->key);
@@ -208,9 +289,9 @@ void get(){
 			found = true;
 			userInput(com);
 		}
-		tempLength = strlen(tempEntry->key);
+		// tempLength = strlen(tempEntry->key);
 		if (tempEntry->next == NULL && found == false){
-			printf("no such key\n");
+			printf("no such key\n\n");
 			break;
 		}
 	}
@@ -218,7 +299,7 @@ void get(){
 }
 
 int command_help(){
-	printf("%s", MANPAGE);
+	printf("%s\n", MANPAGE);
 	userInput(com);
 	return 0;
 }

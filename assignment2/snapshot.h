@@ -86,6 +86,7 @@ void entry_insertAtTail();
 list of values instead of nothing*/
 // void set(entry *entry_head, value *value_head);
 void set();
+void del();
 void get();
 void push(entry *list, value *value);
 void append(entry *list, value *value);
