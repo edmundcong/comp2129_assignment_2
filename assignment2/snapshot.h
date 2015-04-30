@@ -7,9 +7,10 @@
 
 #define HELP "HELP\n"
 #define BYE "BYE\n"
-#define LIST_KEYS "LIST KEYS\n"
-#define LIST_ENTRIES "LIST ENTRIES\n"
-#define LIST_SNAPSHOTS "LIST SNAPSHOTS\n"
+#define LIST "LIST"
+#define KEYS "KEYS\n"
+#define ENTRIES "ENTRIES\n"
+#define SNAPSHOTS "SNAPSHOTS\n"
 #define GET "GET"
 #define DEL "DEL"
 #define PURGE "PURGE"
@@ -72,6 +73,7 @@ int command_help();
 int userInput(char com[]);
 int commandMap(char **comCheck);
 
+
 value* value_init(int value_stored);
 void value_insertAtHead(int value_stored);
 void value_insertAtTail(int value_stored);
@@ -88,6 +90,9 @@ list of values instead of nothing*/
 void set();
 void del();
 void get();
+void list_keys();
+void list_entries();
+void list_snapshots();
 void push(entry *list, value *value);
 void append(entry *list, value *value);
 

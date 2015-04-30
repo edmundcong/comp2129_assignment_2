@@ -3,12 +3,14 @@
 
 #define MAX_KEY_LENGTH 16
 #define MAX_LINE_LENGTH 1024
+#define SEPARATOR " "
 
 #define HELP "HELP\n"
 #define BYE "BYE\n"
-#define LISTKEYS "LIST KEYS\n"
-#define LISTENTRIES "LIST ENTRIES\n"
-#define LISTSNAPSHOTS "LIST SNAPSHOTS\n"
+#define LIST "LIST"
+#define KEYS "KEYS\n"
+#define ENTRIES "ENTRIES\n"
+#define SNAPSHOTS "SNAPSHOTS\n"
 #define GET "GET"
 #define DEL "DEL"
 #define PURGE "PURGE"
@@ -21,7 +23,7 @@
 #define DROP "DROP"
 #define ROLLBACK "ROLLBACK"
 #define CHECKOUT "CHECKOUT"
-#define SNAPSHOT "SNAPSHOT"
+#define SNAPSHOT "SNAPSHOT\n"
 #define MIN "MIN"
 #define MAX "MAX"
 #define SUM "SUM"
@@ -64,26 +66,40 @@
 
 typedef struct value value;
 typedef struct entry entry;
-typedef struct entry_list entry_list;
 typedef struct snapshot snapshot;
-typedef struct snapshot_list snapshot_list;
 
-//function headers
+/*Function headers*/
 int command_help();
 int userInput(char com[]);
 int commandMap(char **comCheck);
-//entry functions
-entry_list *entry_list_create();
-void set(entry_list *list, value *value);
-void push(entry_list *list, value *value);
-void append(entry_list *list, value *value);
 
-/*Nodes*/
+value* value_init(int value_stored);
+void value_insertAtHead(int value_stored);
+void value_insertAtTail(int value_stored);
+
+void get_values(entry* tmp);
+// void refresh_entry(entry* tmp);
+
+entry* entry_init();
+void entry_insertAtHead();
+void entry_insertAtTail();
+/*once i've finished this linkedlist i will need to pass this a linked
+list of values instead of nothing*/
+// void set(entry *entry_head, value *value_head);
+void set();
+void del();
+void get();
+void list_keys();
+void list_entries();
+void list_snapshots();
+void push(entry *list, value *value);
+void append(entry *list, value *value);
 
 struct value {
   value* prev;
   value* next;
   int value;
+  int value_index;
 };
 
 struct entry {
@@ -99,18 +115,4 @@ struct snapshot {
   entry* entries;
   int id;
 };
-
-/*Lists*/
-
-struct entry_list {
-  entry* prev;
-  entry* next;
-  int len;
-};
-
-struct snapshot_list{
-  snapshot *first;
-  snapshot *last;
-};
-
 #endif
