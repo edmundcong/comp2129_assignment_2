@@ -138,6 +138,16 @@ int commandMap(char **comCheck){
 		// free(entry_head);
 		// free(snapshot_head);
 		//need to clear and close DB here
+		// *value delValue;
+		// *entry delEntry;
+		// while(entry_head->next != NULL){
+		// 	delEntry = entry_head->next;
+		// 	while(value_head->next != NULL){
+		// 		delValue = value_head->next;
+		// 		free(value_head);
+		// 	}
+		// 	free(entry_head);
+		// }
 		exit(0);
 	}
 	printf("no such command\n\n");
@@ -198,7 +208,7 @@ if((tempEntry->next == NULL)&&(tempEntry->prev == NULL)){
 if((tempEntry->next != NULL)&&(tempEntry->prev == NULL)){
 	entry_head = tempEntry->next;
 	tempEntry->next->prev = NULL;
-	while(entry_head->values->next != NULL){
+	while(tempEntry->values->next != NULL){ //entry_head to tempentry
 		tempValue = tempEntry->values;
 		tempEntry->values = tempEntry->values->next;
 		free(tempValue); //need to free all vlaues
@@ -227,7 +237,7 @@ if((tempEntry->next == NULL)&&(tempEntry->prev != NULL)){
 	while(tempEntry->values->next != NULL){
 		tempValue = tempEntry->values;
 		tempEntry->values = tempEntry->values->next;
-		free(tempEntry->values);
+		free(tempValue);
 	}
 	tempEntry->prev->next = NULL;
 	free(tempEntry);
@@ -313,6 +323,10 @@ void get(){
 	while (found == false){
 		// printf("1.5 keylength: %d and tempLength: %d\n", keyLength, tempLength);
 		tempEntry = tempEntry->next;
+		if(tempEntry == NULL){
+			printf("no such key\n\n");
+			break;
+		}
 		tempLength = strlen(tempEntry->key);
 		// printf("2 keylength: %d and tempLength: %d\n", keyLength, tempLength);
 		if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
