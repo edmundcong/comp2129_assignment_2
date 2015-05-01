@@ -292,8 +292,13 @@ void list_entries(){
 }
 
 void list_keys(){
-	if(is_entry_head == 0){
+	if((is_entry_head == 0)&&(list_entries_called == false)){
 		printf("no keys\n\n");
+		return;
+	}
+	if((is_entry_head == 0)&&(list_entries_called == true)){
+		list_entries_called = false;
+		printf("no entries\n\n");
 		return;
 	}
 
@@ -313,24 +318,7 @@ void list_keys(){
 
 	reverseEntries(revEntries);
 
-	// for(k = i; k >= 0; k--){
-	// 	printf("%s", revEntries[k]);
-	// 	if(list_entries_called == true){
-	// 		comCheck[1] = revEntries[k];
-	// 		// get();
-	// 	}
-	// 	// 	printf(" [");
-	// 	// 	while(j != 0){
-	// 	// 		printf("%d", values_ar[i][j]);
-	// 	// 		printf(" ");
-	// 	// 		j--;
-	// 	// 	}
-	// 	// 	printf("]");
-	// 	// }
-	// 	printf("\n");
-	// }
-	// printf("\n");
-	// list_entries_called = false;
+
 }
 
 void reverseEntries(char **revEntries){

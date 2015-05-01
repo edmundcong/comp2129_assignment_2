@@ -5,6 +5,10 @@
 #define MAX_LINE_LENGTH 1024
 #define SEPARATOR " "
 
+#define LIST_ENTRIES "LIST ENTRIES\n"
+#define LIST_KEYS "LIST KEYS\n"
+#define LIST_SNAPSHOTS "LIST SNAPSHOTS\n"
+
 #define HELP "HELP\n"
 #define BYE "BYE\n"
 #define LIST "LIST"
