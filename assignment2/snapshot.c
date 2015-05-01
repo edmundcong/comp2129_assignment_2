@@ -17,15 +17,21 @@ snapshot* snapshot_head = NULL;
 int value_stored = 0; //integer value for value node
 int value_index = 1; //index for value in LL
 int value_array_index = 0; //index for values in passing array
+
+int entries_listed = 0;
 int i = 0;
+int l = 0;
 int j = 0;
 int k = 0;
+
 int is_entry_head = 0; //to determine whether to add to head or tail
 int is_value_head = 0;
 int value_entries_counter = 0;
+bool list_entries_called = false;
 bool tail_called = false;
 
 int value_entries[MAX_LINE_LENGTH];
+char *revEntries[MAX_LINE_LENGTH];
 char key[MAX_KEY_LENGTH];
 char com[MAX_LINE_LENGTH]; //store initial command/input
 char *comCheck[MAX_LINE_LENGTH]; //stores current command/input
@@ -127,27 +133,38 @@ int commandMap(char **comCheck){
 		printf("ok\n\n");
 		userInput(com);
 	}
-	if ((strcasecmp(*comCheck, LIST)==0)&&(strcasecmp(*++comCheck, KEYS) == 0)){
-		list_keys();
-		// printf("\n");
-		userInput(com);
+
+	if (strcasecmp(*comCheck, LIST)==0){
+		char *tempCommand[MAX_LINE_LENGTH];
+		*tempCommand = *++comCheck;
+		if (strcasecmp(*tempCommand, KEYS) == 0){
+			list_keys();
+			userInput(com);
+		}
+		if (strcasecmp(*tempCommand, ENTRIES) == 0){
+			list_entries();
+			userInput(com);
+		}
 	}
+
 	if (strcasecmp(*comCheck, BYE) == 0){
-		printf("bye\n");
+		printf("bye\n\n");
 		// free(value_head);
 		// free(entry_head);
 		// free(snapshot_head);
 		//need to clear and close DB here
-		// *value delValue;
-		// *entry delEntry;
+		// *value delValue = NULL;
+		// *entry delEntry = NULL;
 		// while(entry_head->next != NULL){
-		// 	delEntry = entry_head->next;
 		// 	while(value_head->next != NULL){
-		// 		delValue = value_head->next;
-		// 		free(value_head);
+		// 		value_head = value_head->next;
+		// 		free(value_head->prev);
 		// 	}
-		// 	free(entry_head);
+		// 	free(value_head);
+		// 	entry_head = entry_head->next;
+		// 	free(entry_head->prev);
 		// }
+		// free(entry_head);
 		exit(0);
 	}
 	printf("no such command\n\n");
@@ -188,7 +205,7 @@ while(found == false){
 		printf("no such key\n\n");
 		userInput(com);
 	}
-		tempEntry = tempEntry->next;
+	tempEntry = tempEntry->next;
 }
 value* tempValue;
 
@@ -269,30 +286,73 @@ void set(){
 	userInput(com);
 }
 
+void list_entries(){
+	list_entries_called = true;
+	list_keys();
+}
+
 void list_keys(){
 	if(is_entry_head == 0){
 		printf("no keys\n\n");
 		return;
 	}
-	char *revEntries[MAX_LINE_LENGTH];
-	int i = 0;
+
+	l = 0;
+	k = 0;
 
 	entry* tempEntry = entry_head;
-	while(tempEntry->next != NULL){
-		revEntries[i] = tempEntry->key;
+	while(tempEntry->next != NULL){ //>1 entry
+		revEntries[l] = tempEntry->key;
 		tempEntry = tempEntry->next;
-		i++;
-	}
-	if (tempEntry != NULL){
-		// printf("%s\n", tempEntry->key);
-		revEntries[i] = tempEntry->key;
+		l++;
 	}
 
-	for(k = i; k >= 0; k--){
-		printf("%s\n", revEntries[k]);
+	if (tempEntry != NULL){
+		revEntries[l] = tempEntry->key;
+	}
+
+	reverseEntries(revEntries);
+
+	// for(k = i; k >= 0; k--){
+	// 	printf("%s", revEntries[k]);
+	// 	if(list_entries_called == true){
+	// 		comCheck[1] = revEntries[k];
+	// 		// get();
+	// 	}
+	// 	// 	printf(" [");
+	// 	// 	while(j != 0){
+	// 	// 		printf("%d", values_ar[i][j]);
+	// 	// 		printf(" ");
+	// 	// 		j--;
+	// 	// 	}
+	// 	// 	printf("]");
+	// 	// }
+	// 	printf("\n");
+	// }
+	// printf("\n");
+	// list_entries_called = false;
+}
+
+void reverseEntries(char **revEntries){
+	if(list_entries_called == true){
+		while(l >= 0){
+			printf("%s", revEntries[l]);
+			printf(" ");
+			comCheck[1] = revEntries[l];
+			l--;
+			get();
+		}
+	} else {
+		for(k = l; k >= 0; k--){
+			printf("%s", revEntries[k]);
+			printf("\n");
+
+		}
 	}
 	printf("\n");
+	list_entries_called = false;
 }
+
 
 void get_values(entry* tmp){
 	value* tempValue = tmp->values;
@@ -302,7 +362,15 @@ void get_values(entry* tmp){
 		printf(" ");
 		tempValue = tempValue->next; //should reset tempvalue
 	}
+	if (list_entries_called == true){
+		printf("%d]\n", tempValue->value);
+	} else {
 	printf("%d]\n\n", tempValue->value);
+	}
+	if (list_entries_called == true){
+		entries_listed++;
+		reverseEntries((revEntries));
+	}
 }
 
 void get(){
@@ -311,10 +379,14 @@ void get(){
 		userInput(com);
 	}
 
+
 	entry* tempEntry = entry_head;
 	bool found = false;
 	int keyLength = strlen(comCheck[1])-1;
 	int tempLength = strlen(tempEntry->key);
+	if (list_entries_called == true){
+		keyLength = keyLength+1;
+	}
 	if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
 		get_values(tempEntry);
 		found = true;
@@ -364,7 +436,6 @@ int userInput(char com[]){
 		}
 		if (i > 1) value_entries_counter = i;
 		free(tokPtr);
-		k = 0;
 		commandMap(comCheck);
 	}
 	return 0;

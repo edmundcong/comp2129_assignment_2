@@ -78,6 +78,8 @@ value* value_init(int value_stored);
 void value_insertAtHead(int value_stored);
 void value_insertAtTail(int value_stored);
 
+void reverseEntries(char **revEntries);
+
 void get_values(entry* tmp);
 // void refresh_entry(entry* tmp);
 
