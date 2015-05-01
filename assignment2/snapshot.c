@@ -7,6 +7,7 @@
 //free all memory
 
 //note: use str_length not sizeof(only works at compile time)
+//cant overwrite entry if its the first element of the list - del function maybe
 
 #include "snapshot.h"
 value* values_temp = NULL;
@@ -89,11 +90,18 @@ void entry_insertAtTail(){
 	}
 }
 
+// if(temp->prev == NULL){
+// 	if(strncmp(temp->key,entry_head->key,keyLength)==0){
+// 		comCheck[1] = (temp->key);
+// 		tail_called = true; //this can delete head but causes list entries to break
+// 		del();
+// 		return;
+// 	}
+// }
+
 void value_insertAtHead(int value_stored){
 	value* newValue = value_init(value_stored);
 	value_head = newValue;
-	// printf("value_insertAtHead: value_head is %d and newValue is %d\n",
-	// value_head->value, newValue->value);
 	is_value_head = 1;
 	return;
 }
@@ -134,6 +142,11 @@ int commandMap(char **comCheck){
 		userInput(com);
 	}
 
+	if (strcasecmp(*comCheck, POP)==0){
+		pop();
+		userInput(com);
+	}
+
 	if (strcasecmp(*comCheck, LIST)==0){
 		char *tempCommand[MAX_LINE_LENGTH];
 		*tempCommand = *++comCheck;
@@ -149,22 +162,16 @@ int commandMap(char **comCheck){
 
 	if (strcasecmp(*comCheck, BYE) == 0){
 		printf("bye\n\n");
-		// free(value_head);
-		// free(entry_head);
-		// free(snapshot_head);
-		//need to clear and close DB here
-		// *value delValue = NULL;
-		// *entry delEntry = NULL;
-		// while(entry_head->next != NULL){
-		// 	while(value_head->next != NULL){
-		// 		value_head = value_head->next;
-		// 		free(value_head->prev);
+		// while(entry_head){
+		// 	entry* entry_delete = entry_head->next;
+		// 	while(value_head){
+		// 		value* value_delete = value_head->next;
+		// 		free(value_head);
+		// 		value_head = value_delete;
 		// 	}
-		// 	free(value_head);
-		// 	entry_head = entry_head->next;
-		// 	free(entry_head->prev);
+		// 	free(entry_head);
+		// 	entry_head = entry_delete;
 		// }
-		// free(entry_head);
 		exit(0);
 	}
 	printf("no such command\n\n");
@@ -172,6 +179,56 @@ int commandMap(char **comCheck){
 	return 0;
 }
 
+void pop(){
+	if (entry_head == NULL){
+		printf("nil\n\n");
+		userInput(com);
+	}
+	entry* tempEntry = entry_head;
+	bool found = false;
+	int keyLength = strlen(comCheck[1])-1;
+	int tempLength = strlen(tempEntry->key);
+
+	if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
+		found = true;
+		rem_val_head(tempEntry);
+		userInput(com);
+	}
+	while (found == false){
+		tempEntry = tempEntry->next;
+		if(tempEntry == NULL){
+			printf("nil\n\n");
+			break;
+		}
+		tempLength = strlen(tempEntry->key);
+		if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
+			found = true;
+			rem_val_head(tempEntry);
+			userInput(com);
+		}
+		if (tempEntry->next == NULL && found == false){
+			printf("nil\n\n");
+			break;
+		}
+	}
+	userInput(com);
+}
+
+void rem_val_head(entry* tmp){
+	if(tmp->values == NULL){
+		printf("nil\n\n");
+		free(tmp->values);
+		return;
+	} else {
+		printf("%d\n\n", tmp->values->value);
+		tmp->values = tmp->values->next;
+		// tmp->values->prev = tmp->values;
+	}
+	value_head->next = NULL;
+	value_head->prev = NULL;
+	free(value_head);
+
+}
 
 void del(){
 	//double delete past first node doesn't work
@@ -344,6 +401,12 @@ void reverseEntries(char **revEntries){
 
 void get_values(entry* tmp){
 	value* tempValue = tmp->values;
+
+	if(tempValue == NULL){
+		printf("[]\n\n");
+		return;
+	}
+
 	printf("[");
 	while(tempValue->next != NULL){
 		printf("%d", tempValue->value);
@@ -353,7 +416,7 @@ void get_values(entry* tmp){
 	if (list_entries_called == true){
 		printf("%d]\n", tempValue->value);
 	} else {
-	printf("%d]\n\n", tempValue->value);
+		printf("%d]\n\n", tempValue->value);
 	}
 	if (list_entries_called == true){
 		entries_listed++;
@@ -366,7 +429,6 @@ void get(){
 		printf("no such key\n\n");
 		userInput(com);
 	}
-
 
 	entry* tempEntry = entry_head;
 	bool found = false;

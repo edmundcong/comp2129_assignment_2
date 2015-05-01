@@ -85,7 +85,7 @@ void value_insertAtTail(int value_stored);
 void reverseEntries(char **revEntries);
 
 void get_values(entry* tmp);
-// void refresh_entry(entry* tmp);
+void rem_val_head(entry* tmp);
 
 entry* entry_init();
 void entry_insertAtHead();
@@ -96,6 +96,7 @@ list of values instead of nothing*/
 void set();
 void del();
 void get();
+void pop();
 void list_keys();
 void list_entries();
 void list_snapshots();
