@@ -16,3 +16,28 @@
 		printf("no such key\n");
 	}
 }
+
+push code:
+
+			int tmp = tempEntry->values->value;
+			printf("tmp: %d\n", tmp);
+			tempEntry->values->next->value = tmp;
+			printf("Tvnv: %d\n",tempEntry->values->next->value);
+			tempEntry->values = tempEntry->values->next;
+	// newValue = tempEntry->values;
+	// int tmp = 0;
+	// printf("newValue value %d\n", newValue->value);
+	// printf("newValue value %d\n", newValue->next->value);
+	// while(newValue->next != NULL){
+	// 	printf("1\n");
+	// 	if(newValue->next == NULL){
+	// 		tmp = newValue->value;
+	// 		printf("2\n");
+	// 		while(newValue->prev != NULL){
+	// 			newValue = newValue->prev;
+	// 			printf("newValue value %d\n", newValue->value);
+	// 		}
+	// 		newValue->value = tmp;
+	// 	}
+	// 	newValue = newValue->next;
+	// }

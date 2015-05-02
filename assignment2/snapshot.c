@@ -147,6 +147,16 @@ int commandMap(char **comCheck){
 		userInput(com);
 	}
 
+	if (strcasecmp(*comCheck, PUSH)==0){
+		push();
+		userInput(com);
+	}
+
+	if (strcasecmp(*comCheck, APPEND)==0){
+		append();
+		userInput(com);
+	}
+
 	if (strcasecmp(*comCheck, LIST)==0){
 		char *tempCommand[MAX_LINE_LENGTH];
 		*tempCommand = *++comCheck;
@@ -179,11 +189,149 @@ int commandMap(char **comCheck){
 	return 0;
 }
 
-void pop(){
-	if (entry_head == NULL){
-		printf("nil\n\n");
+void entry_head_null_print(char message[]){
+	if(entry_head == NULL){
+		printf("%s\n\n", message);
 		userInput(com);
 	}
+}
+
+entry* find_entry(){ //use for push and append
+	entry* tempEntry = entry_head;
+	bool found = false;
+	int keyLength = strlen(comCheck[1]);
+	int tempLength = strlen(tempEntry->key);
+	if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
+		found = true;
+		return tempEntry;
+	}
+	while (found == false){
+		tempEntry = tempEntry->next;
+		if(tempEntry == NULL){
+			printf("invalid input\n\n");
+			userInput(com);
+		}
+		tempLength = strlen(tempEntry->key);
+		if(strncmp(tempEntry->key,comCheck[1],keyLength) == 0 && keyLength == tempLength){
+			found = true;
+			return tempEntry;
+		}
+		if (tempEntry->next == NULL && found == false){
+			printf("invalid input\n\n");
+			userInput(com);
+		}
+	}
+	return tempEntry;
+}
+
+void append(){
+	char message[] = "invalid input";
+	entry_head_null_print(message);
+	entry* tempEntry = find_entry(&comCheck[1]); //entry
+	int pre_swp_int = 0;
+	int count = 0;
+	int ar[MAX_LINE_LENGTH];
+	for (int l = 2; l < value_entries_counter; l++){
+		value_entries[value_array_index] = atoi(comCheck[l]);
+		value_array_index++;
+		value_stored = value_entries[value_array_index-1];
+		pre_swp_int = value_stored;
+		ar[count] = value_stored;
+		count++; //same as value_array_index
+	}
+
+	for(int i = 0; i < count; i++){
+		value* temp = tempEntry->values;
+		value* newValue = value_init(ar[i]);
+		while(temp->next != NULL){
+			temp = temp->next;
+		}
+		temp->next = newValue;
+		newValue->prev = temp;
+		// value* head_ptr = tempEntry->values;
+		// value* newValue = value_init(ar[i]);
+		// while(tempEntry->values->next != NULL){
+		// 	value* newValue = value_init(ar[i]);
+		// 	tempEntry->values->next = newValue;
+		// 	newValue->prev = tempEntry->values;
+		// 	tempEntry->values = tempEntry->values->next;
+		// }
+		// value_insertAtTail(ar[i]);
+		// tempEntry->values = head_ptr;
+		// tempEntry->values->next = newValue;
+	}
+	// get_values(tempEntry);
+	// newValue = tempEntry->values;
+	printf("ok\n\n");
+	userInput(com);
+}
+
+
+void push(){
+	char message[] = "invalid input";
+	entry_head_null_print(message);
+	entry* tempEntry = find_entry(&comCheck[1]); //entry
+	int pre_swp_int = 0;
+	// int tmp = 0;
+	int count = 0;
+	// int i = 0;
+	int ar[MAX_LINE_LENGTH];
+	// int post_swp_int = 0;
+	for (int l = 2; l < value_entries_counter; l++){
+		value_entries[value_array_index] = atoi(comCheck[l]);
+		value_array_index++;
+		value_stored = value_entries[value_array_index-1];
+		pre_swp_int = value_stored;
+		ar[count] = value_stored;
+		count++; //same as value_array_index
+		// value_insertAtTail(value_stored);
+		// tempEntry->values->value
+	}
+
+	for(int i = 0; i < count; i++){
+		value* head_ptr = tempEntry->values;
+		value* newValue = value_init(ar[i]);
+
+		tempEntry->values = newValue;
+		tempEntry->values->next = head_ptr;
+	}
+
+	get_values(tempEntry);
+	printf("ok\n\n");
+	userInput(com);
+}
+
+// printf("l:%d == value_entries_counter:%d\n", l, value_entries_counter);
+// if (l == value_entries_counter) {
+// 	newValue = value_init(value_stored);
+// 	printf("1 newvalue value %d\n", newValue->value);
+// }  else {
+// newValue = value_init(value_stored);
+//
+// while(newValue != NULL){
+// 	// printf("\ntempEntry value %d\n", newValue->value);
+// 	// printf("post_swp_int: %d\n", post_swp_int);
+// 	// printf("pre_swp_int: %d\n\n", pre_swp_int);
+// 	// post_swp_int = newValue->value;
+// 	// newValue->value = pre_swp_int;
+// 	// newValue->next->value = pre_swp_int;
+// 	// newValue = newValue->next;
+// 	if(newValue == NULL){
+// 		// printf("tempEntry->value is null\n");
+// 		break;
+// 	}
+// 	if(newValue->next == NULL){
+// 		// printf("%d\n", pre_swp_int); //
+// 		break;
+// 	}
+// }
+// tempEntry->values->prev = newValue;
+// newValue->next = tempEntry->values->next;
+// printf("3 newvalue value %d\n", newValue->value);
+
+void pop(){
+	char message[] = "nil";
+	entry_head_null_print(message);
 	entry* tempEntry = entry_head;
 	bool found = false;
 	int keyLength = strlen(comCheck[1])-1;
@@ -215,18 +363,20 @@ void pop(){
 }
 
 void rem_val_head(entry* tmp){
+	value* tmpValue = tmp->values;
 	if(tmp->values == NULL){
 		printf("nil\n\n");
-		free(tmp->values);
+		free(tmpValue);
 		return;
-	} else {
-		printf("%d\n\n", tmp->values->value);
-		tmp->values = tmp->values->next;
-		// tmp->values->prev = tmp->values;
 	}
-	value_head->next = NULL;
-	value_head->prev = NULL;
-	free(value_head);
+
+	printf("%d\n\n", tmp->values->value);
+	tmp->values = tmp->values->next;
+	// tmp->values->prev = tmp->values;
+
+	tmpValue->next = NULL;
+	tmpValue->prev = NULL;
+	free(tmpValue);
 
 }
 
@@ -425,11 +575,8 @@ void get_values(entry* tmp){
 }
 
 void get(){
-	if (entry_head == NULL){
-		printf("no such key\n\n");
-		userInput(com);
-	}
-
+	char message[] = "no such key";
+	entry_head_null_print(message);
 	entry* tempEntry = entry_head;
 	bool found = false;
 	int keyLength = strlen(comCheck[1])-1;

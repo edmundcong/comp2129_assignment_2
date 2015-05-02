@@ -83,9 +83,11 @@ void value_insertAtHead(int value_stored);
 void value_insertAtTail(int value_stored);
 
 void reverseEntries(char **revEntries);
+entry* find_entry(char **comCheck);
 
 void get_values(entry* tmp);
 void rem_val_head(entry* tmp);
+void entry_head_null_print(char message[]);
 
 entry* entry_init();
 void entry_insertAtHead();
@@ -94,14 +96,15 @@ void entry_insertAtTail();
 list of values instead of nothing*/
 // void set(entry *entry_head, value *value_head);
 void set();
+void push();
+void append();
 void del();
 void get();
 void pop();
 void list_keys();
 void list_entries();
 void list_snapshots();
-void push(entry *list, value *value);
-void append(entry *list, value *value);
+
 
 struct value {
   value* prev;
