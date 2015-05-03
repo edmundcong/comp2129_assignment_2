@@ -1,0 +1,22 @@
+DEL edge
+SET edge 1
+DEL edge
+DEL edge
+SET spartan 2 3
+SET hololens 4 5 6
+SET ten 0
+SET uap 7
+LIST ENTRIES
+DEL tenn
+DEL ten
+LIST ENTRIES
+DEL hololens
+DEL spartan
+DEL uap
+LIST ENTRIES
+GET spartan
+GET hololens
+GET ten
+GET uap
+GET edge
+BYE

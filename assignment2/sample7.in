@@ -1,0 +1,4 @@
+DEL edge
+SET edge 1
+DEL edge
+BYE

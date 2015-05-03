@@ -1,0 +1,10 @@
+PLUCK apple 5
+SET apple 1 22 333 4444 55555 666666
+PLUCK apple 1
+PLUCK apple 5
+PLUCK apple 2
+PLUCK apple 1
+PLUCK apple 1
+PLUCK apple 1
+PLUCK apple 1
+BYE

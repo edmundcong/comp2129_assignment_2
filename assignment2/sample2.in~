@@ -1,0 +1,8 @@
+SET apple 3
+SET banana 5
+GET orange
+SET orange 8
+GET apple
+GET banana
+GET orange
+BYE

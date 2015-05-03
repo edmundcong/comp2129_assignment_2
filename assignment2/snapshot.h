@@ -1,14 +1,15 @@
 #ifndef SNAPSHOT_H
 #define SNAPSHOT_H
 
+//constants
 #define MAX_KEY_LENGTH 16
 #define MAX_LINE_LENGTH 1024
 #define SEPARATOR " "
 
+//commands
 #define LIST_ENTRIES "LIST ENTRIES\n"
 #define LIST_KEYS "LIST KEYS\n"
 #define LIST_SNAPSHOTS "LIST SNAPSHOTS\n"
-
 #define HELP "HELP\n"
 #define BYE "BYE\n"
 #define LIST "LIST"
@@ -22,7 +23,7 @@
 #define PUSH "PUSH"
 #define APPEND "APPEND"
 #define PICK "PICK"
-#define PLUCK "PLUS"
+#define PLUCK "PLUCK"
 #define POP "POP"
 #define DROP "DROP"
 #define ROLLBACK "ROLLBACK"
@@ -76,36 +77,43 @@ typedef struct snapshot snapshot;
 int command_help();
 int userInput(char com[]);
 int commandMap(char **comCheck);
-
-
-value* value_init(int value_stored);
-void value_insertAtHead(int value_stored);
-void value_insertAtTail(int value_stored);
-
-void reverseEntries(char **revEntries);
-entry* find_entry(char **comCheck);
-
-void get_values(entry* tmp);
-void rem_val_head(entry* tmp);
-void entry_head_null_print(char message[]);
-
-entry* entry_init();
-void entry_insertAtHead();
-void entry_insertAtTail();
-/*once i've finished this linkedlist i will need to pass this a linked
-list of values instead of nothing*/
-// void set(entry *entry_head, value *value_head);
+void pick();
+void min();
+void max();
+void sum();
+void len();
 void set();
 void push();
 void append();
 void del();
 void get();
 void pop();
+void pluck();
+void bye();
 void list_keys();
 void list_entries();
 void list_snapshots();
 
+/*node creating function headers*/
+value* value_init(int value_stored, int value_index);
+void value_insertAtHead(int value_stored, int value_index);
+void value_insertAtTail(int value_stored, int value_index);
+void entry_insertAtHead();
+void entry_insertAtTail();
+entry* entry_init();
 
+/*Utility functions*/
+void reverseEntries(char **revEntries);
+void get_values(entry* tmp);
+entry* find_entry_key(char **com_check);
+void rem_val_head(entry* tmp);
+void rem_val_index(entry* tmpEntry, value* tmp, int index);
+void entry_head_null_print(char message[]);
+entry* find_entry(char **com_check);
+value* arithmetic_functions();
+
+
+/*Node structs*/
 struct value {
   value* prev;
   value* next;
@@ -117,6 +125,7 @@ struct entry {
   entry* prev;
   entry* next;
   value* values;
+  value* value_head;
   char key[MAX_KEY_LENGTH];
 };
 

@@ -4,9 +4,11 @@ LIST SNAPSHOTS
 SET a 1
 GET a
 POP a
+GET a
+POP a
 PUSH a 2 1
 GET a
-APPEND a 3 4
+APPEND a 34
 GET a
 DEL a
 DEL a

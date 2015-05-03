@@ -1,0 +1,13 @@
+PICK apple 1
+SET apple 1 22 333 4444 55555
+PICK apple 1
+PICK apple 2
+PICK apple 3
+PICK apple 4
+PICK apple 5
+PICK apple 0
+PICK apple 6
+PICK apple 100
+PICK apple -1
+PICK apple -100
+BYE
